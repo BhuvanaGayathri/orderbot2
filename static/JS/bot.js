@@ -12,18 +12,46 @@ userMessageInput.addEventListener("keydown", function (event) {
     }
 });
 
-document.getElementById('startButton').addEventListener('click', () => {
+// document.getElementById('startButton').addEventListener('click', () => {
+//     recognition.start();
+// });
+
+// document.getElementById('stopButton').addEventListener('click', () => {
+//     recognition.stop();
+// });
+
+// recognition.onresult = (event) => {
+//     const result = event.results[event.results.length - 1][0].transcript;
+//     sendVoiceData(result);
+// };
+
+// ... your existing code ...
+
+let recognitionIsActive = false; // Keeps track of whether recognition is active or not
+
+document.getElementById('toggleButton').addEventListener('click', () => {
+  if (recognitionIsActive) {
+    recognition.stop();
+  } else {
     recognition.start();
+  }
 });
 
-document.getElementById('stopButton').addEventListener('click', () => {
-    recognition.stop();
-});
+recognition.onstart = () => {
+  recognitionIsActive = true;
+};
+
+recognition.onend = () => {
+  recognitionIsActive = false;
+};
 
 recognition.onresult = (event) => {
-    const result = event.results[event.results.length - 1][0].transcript;
-    sendVoiceData(result);
+  const result = event.results[event.results.length - 1][0].transcript;
+  sendVoiceData(result);
 };
+
+// ... your existing code ...
+
 
 function sendVoiceData(voiceInput) {
     appendMessage("User", voiceInput);
@@ -98,3 +126,4 @@ function speakText(text) {
     const utterance = new SpeechSynthesisUtterance(text);
     speechSynthesis.speak(utterance);
 }
+
